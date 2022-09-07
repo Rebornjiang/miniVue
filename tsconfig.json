@@ -7,9 +7,17 @@
     "module": "ESNext",
     "strict": true,
     "noImplicitAny": true,
+    "noImplicitThis": false,
     "removeComments": false,
     "lib": ["ESNext", "DOM"],
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+
+
+    "paths": {
+      "@type/*": ["typescript/*"],
+      "@": ["src"]
+    }
   },
   "include": ["src", "typescript", "examples"]
 }

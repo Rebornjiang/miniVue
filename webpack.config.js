@@ -19,7 +19,11 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: ['.ts', '.js']
+    extensions: ['.ts', '.js'],
+    alias: {
+      '@': path.resolve(__dirname, 'src'),
+      '@type': path.resolve(__dirname, 'typescript')
+    }
   },
   devServer: {
     static: './dist',
