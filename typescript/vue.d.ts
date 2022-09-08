@@ -9,14 +9,28 @@ interface vueBaseOptions {
   methods: plainObj<Function>
 }
 
-export type constructorOptions = vueLifecycleHooks & {[key: string]: any} & vueBaseOptions
+export type constructorOptions = vueLifecycleHooks & vueBaseOptions & {[key: string]: any}
 
-export declare class Vue {
+// Component 为组件实例的类型
+export declare class Component {
   constructor(options?:any)
 
-  static cid:number
+  // 实例属性
+  // public
+  $el: string | Element
+  $data: Record<string, any>
+  $options: Record<string, any>
 
-  // Function
+  // private
+  _uid: number
+  _data: Record<string, any>
+  _isMounted: boolean
+  _isVue: boolean
+
+  // 原型上的方法
+  // public
+
+  // private
   _init(options: constructorOptions):void
   _render():VNode
   _update(vnode: VNode):void
