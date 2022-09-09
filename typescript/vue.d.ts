@@ -34,4 +34,11 @@ export declare class Component {
   _init(options: constructorOptions):void
   _render():VNode
   _update(vnode: VNode):void
+  _patch(oldVnode: VNode | Element | null, vnode: VNode):Element
+
+  // render-helper
+  _v(text:string | number):VNode
+  _c(tag:string, children:(VNode | string)[] | string):VNode
 }
+
+export type patchFn = Component['_patch']

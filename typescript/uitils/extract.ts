@@ -1,4 +1,4 @@
-import { Component } from '@type/vue'
+import type{ Component } from '@type/vue'
 
 // 想法是从这个 Component 组件实例中提取所有原型上的方法
 

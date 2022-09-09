@@ -1,9 +1,5 @@
-console.log('hello wo333lrd!!!')
+import Vue from './base/index'
 
-function fn (name: string, age: number): { [key: string]: string | number } {
-  return { name, age }
-}
+console.log(Vue)
 
-console.log(fn('111rebosdf333rn', 18))
-
-export default function Vue () { }
+export default Vue

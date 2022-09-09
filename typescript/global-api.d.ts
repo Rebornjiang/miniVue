@@ -1,4 +1,4 @@
-import { VueCtorPrototype } from '@type/uitils/extract'
+import type{ VueCtorPrototype } from '@type/uitils/extract'
 
 // GlobalAPI 将会被指定为 Vue 构造函数的类型
 export interface GlobalAPI {

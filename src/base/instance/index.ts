@@ -3,7 +3,7 @@ import type { GlobalAPI } from '@type/global-api'
 import { initMixin } from './init'
 import { renderMixin } from './render'
 import { stateMixin } from './state'
-
+import { lifecycleMixin } from './lifecycle'
 function Vue (options:any) {
   if (new.target !== Vue) throw new Error('Vue 必须使用 new 来调用')
   this._init(options)
@@ -11,8 +11,10 @@ function Vue (options:any) {
 
 initMixin(Vue as unknown as GlobalAPI)
 
-renderMixin(Vue as unknown as GlobalAPI)
-
 stateMixin(Vue as unknown as GlobalAPI)
+
+lifecycleMixin(Vue as unknown as GlobalAPI)
+
+renderMixin(Vue as unknown as GlobalAPI)
 
 export default Vue as unknown as GlobalAPI

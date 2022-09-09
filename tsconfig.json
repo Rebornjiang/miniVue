@@ -16,7 +16,7 @@
 
     "paths": {
       "@type/*": ["typescript/*"],
-      "@": ["src"]
+      "@/*": ["src/*"]
     }
   },
   "include": ["src", "typescript", "examples"]
