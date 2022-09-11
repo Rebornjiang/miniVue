@@ -39,6 +39,8 @@ export declare class Component {
   // render-helper
   _v(text:string | number):VNode
   _c(tag:string, children:(VNode | string)[] | string):VNode
+
+  $mount(el: Element | string): Component
 }
 
 export type patchFn = Component['_patch']

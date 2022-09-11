@@ -10,3 +10,11 @@ export function lifecycleMixin (Vue: GlobalAPI) {
     console.log(vm)
   }
 }
+
+export function callHook (vm: Component, hook:string) {
+  // 再调用 vue 生命周期钩子函数时是不进行依赖收集的
+  // const handlers = vm.$options[hook]
+  // if (handlers) {
+
+  // }
+}

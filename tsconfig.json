@@ -12,7 +12,7 @@
     "lib": ["ESNext", "DOM"],
     "esModuleInterop": true,
     "moduleResolution": "node",
-
+    "downlevelIteration": true,
 
     "paths": {
       "@type/*": ["typescript/*"],
