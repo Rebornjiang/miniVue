@@ -45,9 +45,9 @@ export function mergeOptions (
   parent: Record<string, any>,
   child: Record<string, any>,
   vm?:Component
-): Record<string, any> {
+): ComponentOptions {
   const options:ComponentOptions = {} as any
-
+  console.log({ parent, child })
   let key
   for (key in parent) {
     mergeField(key)

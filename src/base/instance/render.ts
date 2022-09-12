@@ -3,6 +3,8 @@ import type { GlobalAPI } from '@type/global-api'
 import type { VNode } from '@type/vnode'
 import installRenderHelpers from './render-helpers'
 import type { Component } from '@type/vue'
+
+import { parseElOption } from '@/common/utils'
 export function renderMixin (Vue: GlobalAPI) {
   // 给 Vue 原型添加渲染帮助方法，以便 render 函数用到
   installRenderHelpers(Vue.prototype)
@@ -21,18 +23,34 @@ export function renderMixin (Vue: GlobalAPI) {
 
   Vue.prototype.$mount = function (el) {
     const vm: Component = this
-    // const elDom = parseElOptions(el)
-    // const { options } = vm
+    el = parseElOption(el)
+
+    const options = vm.$options
+
+    if (!options.render) {
+      let template = options.template
+      if (template) {
+        if (typeof template === 'string') {
+          if (template.charAt(0) === '#') {
+            // template 是 string， 但仅是 ID 选择器；
+            const el = parseElOption(template)
+            template = el.innerHTML
+          }
+        } else if (template.nodeType) {
+          // template 直接为 DOM
+          template = template.innerHTML
+        } else {
+          alert('无效模板')
+        }
+      } else {
+        template = el.innerHTML
+      }
+
+      if (template) {
+        // 调用编译器将 template 转换为 render 函数
+      }
+    }
+
     return vm
   }
 }
-
-// function parseElOptions (el:string | Element):Element {
-//   let domRt
-//   if (el && typeof el === 'string') {
-//     const dom = document.querySelector(el)
-//     domRt = dom
-//   }
-//   domRt = el as Element
-//   return domRt
-// }

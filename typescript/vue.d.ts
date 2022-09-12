@@ -1,5 +1,6 @@
 import { vueLifecycleHooks } from './hook'
 import { VNode } from './vnode'
+import { ComponentOptions } from './options'
 
 type plainObj<T = any> = {[key: string | number | symbol] :T}
 
@@ -19,7 +20,7 @@ export declare class Component {
   // public
   $el: string | Element
   $data: Record<string, any>
-  $options: Record<string, any>
+  $options: ComponentOptions
 
   // private
   _uid: number

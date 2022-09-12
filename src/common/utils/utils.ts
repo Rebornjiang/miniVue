@@ -8,3 +8,16 @@
 export function hasOwn (obj: Object, key: string) {
   return Object.hasOwn(obj, key)
 }
+
+const _toString = Object.prototype.toString
+export function isPlainObject<T = boolean> (obj:any):obj is T {
+  return _toString.call(obj) === '[object Object]'
+}
+
+// 检查是否是以 $ || _ 开头的
+export function isValidVariable (v: string):boolean {
+  const ascCode = v.charCodeAt(0)
+  return ascCode !== 0x24 && ascCode !== 0x5f
+}
+
+export const noop = (a?:any, b?:any, c?:any) => {}
