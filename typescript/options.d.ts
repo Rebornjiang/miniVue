@@ -13,7 +13,7 @@ export declare type ComponentOptions = {
 
   el?: string | Element
   template?: string | Element
-  render(h:() => VNode) : VNode
+  render(h?:() => VNode) : VNode | void
 
   // lifecycle
   beforeCreate?: Function

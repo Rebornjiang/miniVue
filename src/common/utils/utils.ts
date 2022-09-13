@@ -21,3 +21,11 @@ export function isValidVariable (v: string):boolean {
 }
 
 export const noop = (a?:any, b?:any, c?:any) => {}
+
+// 将 from 对象本身及其原型链上的所有方法 copy 到 to 对象上
+export function extend (to: Record<keyof any, any>, from?: Record<keyof any, any>):Record<keyof any, any> {
+  for (const key in from) {
+    to[key] = from[key]
+  }
+  return to
+}

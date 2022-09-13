@@ -3,8 +3,10 @@ import type { GlobalAPI } from '@type/global-api'
 import type { VNode } from '@type/vnode'
 import installRenderHelpers from './render-helpers'
 import type { Component } from '@type/vue'
-
+import { compileToFunctions } from '@/compiler'
 import { parseElOption } from '@/common/utils'
+import { CompilerOptions } from '@type/compiler'
+import type { ComponentOptions } from '@type/options'
 export function renderMixin (Vue: GlobalAPI) {
   // 给 Vue 原型添加渲染帮助方法，以便 render 函数用到
   installRenderHelpers(Vue.prototype)
@@ -46,8 +48,11 @@ export function renderMixin (Vue: GlobalAPI) {
         template = el.innerHTML
       }
 
-      if (template) {
+      if (template && typeof template === 'string') {
         // 调用编译器将 template 转换为 render 函数
+        const { render } = compileToFunctions(template, {} as CompilerOptions, vm)
+        // compiler 生成的 render 函数不需要 h 函数参数，需要转下类型
+        options.render = render as ComponentOptions['render']
       }
     }
 
