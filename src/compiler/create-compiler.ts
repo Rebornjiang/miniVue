@@ -1,9 +1,9 @@
 import type{ CompilerOptions, CompiledResult } from '@type/compiler'
-import _baseOptions from './base-options/'
+import baseOptions from './base-options/'
 import { createCompileToFunctions } from './to-function'
 import { generate } from './gencode'
 import { parse } from './parse'
-const baseOptions = _baseOptions as CompilerOptions
+// const baseOptions = _baseOptions as CompilerOptions
 
 // compiler
 function baseCompile (template: string, options:CompilerOptions):CompiledResult {
@@ -20,7 +20,7 @@ function baseCompile (template: string, options:CompilerOptions):CompiledResult 
 function compile (template: string, options: CompilerOptions):CompiledResult {
   const finalOptions = Object.create(baseOptions)
   if (options) {
-    console.log(finalOptions)
+    // console.log(finalOptions, 'finnaly')
   }
 
   const compiled = baseCompile(template.trim(), finalOptions)

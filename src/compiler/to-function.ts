@@ -29,7 +29,6 @@ export function createCompileToFunctions (compile: Compile) {
     options?: CompilerOptions,
     vm?:Component):CompiledFunctionResult {
     options = extend({}, options)
-
     // check cache
     if (cache[template]) return cache[template]
 

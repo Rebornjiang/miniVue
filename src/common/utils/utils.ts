@@ -29,3 +29,13 @@ export function extend (to: Record<keyof any, any>, from?: Record<keyof any, any
   }
   return to
 }
+
+// 基于一个 str（"prop1, prop2,prop3"） 创造一个 MAP，缓存 map 对象，返回一个检验函数判断某个值是否存在 Map 对象中。
+export function makeMap (str:string, expectsLowerCase?:boolean):(val:string) => boolean | undefined {
+  const map:Record<string, boolean> = Object.create(null)
+  const list: string[] = str.split(',')
+  for (let i = 0, len = list.length; i < len; i++) {
+    map[list[i]] = true
+  }
+  return expectsLowerCase ? val => map[val.toLowerCase()] : val => map[val]
+}

@@ -4,7 +4,7 @@ import type { VNode } from '@type/vnode'
 import installRenderHelpers from './render-helpers'
 import type { Component } from '@type/vue'
 import { compileToFunctions } from '@/compiler'
-import { parseElOption } from '@/common/utils'
+import { parseElOption, getOutHtml } from '@/common/utils'
 import { CompilerOptions } from '@type/compiler'
 import type { ComponentOptions } from '@type/options'
 export function renderMixin (Vue: GlobalAPI) {
@@ -26,9 +26,7 @@ export function renderMixin (Vue: GlobalAPI) {
   Vue.prototype.$mount = function (el) {
     const vm: Component = this
     el = parseElOption(el)
-
     const options = vm.$options
-
     if (!options.render) {
       let template = options.template
       if (template) {
@@ -44,8 +42,8 @@ export function renderMixin (Vue: GlobalAPI) {
         } else {
           alert('无效模板')
         }
-      } else {
-        template = el.innerHTML
+      } else if (el) {
+        template = getOutHtml(el)
       }
 
       if (template && typeof template === 'string') {

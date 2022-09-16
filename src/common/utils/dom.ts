@@ -1,13 +1,21 @@
-export function parseElOption (el:string | Element):Element {
-  let domRt
+export function parseElOption (el: string | Element): Element {
   if (el && typeof el === 'string') {
     const dom = document.querySelector(el)
-    domRt = dom
+    return dom as Element
   }
-  domRt = el as Element
-  return domRt
+  return el as Element
 }
 
 export function isElement (elm: any): elm is Element {
   return elm.nodeType
+}
+
+export function getOutHtml (el: Element): string {
+  if (el.outerHTML) {
+    return el.outerHTML
+  } else {
+    const container = document.createElement('div')
+    container.appendChild(el.cloneNode(true))
+    return container.outerHTML
+  }
 }
