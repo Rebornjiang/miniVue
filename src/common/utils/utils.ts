@@ -39,3 +39,11 @@ export function makeMap (str:string, expectsLowerCase?:boolean):(val:string) => 
   }
   return expectsLowerCase ? val => map[val.toLowerCase()] : val => map[val]
 }
+
+export function cached<R> (fn:(val: string) => R):(val: string) => R {
+  const cached:Record<string, R> = Object.create(null)
+  return function cachedFn (val: string) {
+    const hit = cached[val]
+    return hit || (cached[val] = fn(val))
+  }
+}

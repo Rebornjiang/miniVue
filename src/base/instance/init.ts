@@ -13,7 +13,6 @@ export function initMixin (Vue:GlobalAPI) {
     if (options) {
       vm.$options = mergeOptions(Vue.options || {}, options, vm)
     }
-    console.log(vm.$options, 'options')
 
     initState(vm)
 

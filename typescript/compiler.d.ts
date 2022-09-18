@@ -12,7 +12,8 @@ declare type ASTElement = {
   type: 1
   tag: string
   attrsList: ASTAttr[]
-  attrsMap: Record<string, ASTAttr>
+  rawAttrsMap: Record<string, ASTAttr>
+  attrsMap: Record<string, string>
   parent: ASTElement | void
   children: ASTNode[]
 

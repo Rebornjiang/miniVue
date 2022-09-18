@@ -48,17 +48,16 @@ const endTag = new RegExp(`^<\\/${qnameCapture}[^>]*>`)
 export const isPlainTextElement = makeMap('script,style,textarea')
 
 export function parseHTML (html: string, options: parseHTMLOptions) {
-  const { start, end, chars, comment, shouldKeepComment, isUnaryTag } = options
-  console.log({ start, end, chars, comment })
+  const { start, end: handleCloseTag, chars, comment, shouldKeepComment, isUnaryTag } = options
+  console.log({ start, handleCloseTag, chars, comment })
   const stack: startTag[] = []
   let lastTag, last
 
   console.log(stack, last)
   let index = 0 // 这个变量表示整个 html 中当前正在处理的 string 的开始 idx
-  let forExam = 10
-  while (--forExam) {
-    if (!lastTag || isPlainTextElement(lastTag)) {
-      const textEnd = html.indexOf('<')
+  while (html) {
+    if (!lastTag || !isPlainTextElement(lastTag)) {
+      let textEnd = html.indexOf('<') // 表示文本结束的  idx
       if (textEnd === 0) {
         //  textEnd = 0 ， 表非文本结束，可能就会有：注释节点，标签开始结束，IE IF condition；<!DOCTYPE
         // 注释节点
@@ -97,7 +96,12 @@ export function parseHTML (html: string, options: parseHTMLOptions) {
 
         // end Tag
         const endTagMatch = html.match(endTag)
-        if (endTagMatch) return undefined
+        if (endTagMatch) {
+          const curIdx = index
+          advance(endTagMatch[0].length)
+          parseEndTag(endTagMatch[1], curIdx, index)
+          continue
+        }
 
         // start Tag
         const startTagMatch = parseStartTag()
@@ -112,8 +116,21 @@ export function parseHTML (html: string, options: parseHTMLOptions) {
         rest = html.slice(textEnd)
         while (!endTag.test(rest) && !startTagOpen.test(rest) && !commentRe.test(rest) && !ieConditionComment.test(rest)) {
           //
+          next = rest.indexOf('<', 1)
+          if (next < 0) break
+          textEnd += next
+          rest = html.slice(textEnd)
         }
         console.log(text, next)
+        text = html.substring(0, textEnd)
+      }
+
+      if (text) {
+        advance(text.length)
+      }
+
+      if (chars && text) {
+        chars(text, index - text.length, index)
       }
     } else {
       // 处理纯文本内容的元素 script,style,textarea
@@ -183,6 +200,39 @@ export function parseHTML (html: string, options: parseHTMLOptions) {
 
     if (start) {
       start(tagName, finallAttr, unary, match.start, match.end)
+    }
+  }
+
+  function parseEndTag (tagName?: string, start?: number, end?: number) {
+    let pos, lowerCasedTagName
+    if (start == null) start = index
+    if (end == null) end = index
+
+    // tagName 什么时候可能不存在？
+    if (tagName) {
+      lowerCasedTagName = tagName.toLowerCase()
+      for (pos = stack.length - 1; pos >= 0; pos--) {
+        if (stack[pos].lowerCaseTag === lowerCasedTagName) {
+          // 找到 闭口标签对应的开口标签
+          break
+        }
+      }
+    } else {
+      pos = 0
+    }
+
+    if (pos >= 0) {
+      for (let i = stack.length - 1; i >= pos; i--) {
+        // 检测是否有未闭口标签
+        if (i > pos) {
+          console.warn('有为闭口标签', stack[i].tag)
+        }
+
+        handleCloseTag(tagName as string, start, end)
+      }
+
+      stack.length = pos
+      lastTag = pos && stack[pos - 1].tag
     }
   }
 }
