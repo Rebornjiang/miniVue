@@ -1,6 +1,5 @@
 import type { GlobalAPI } from '@type/global-api'
 // import type { Component } from '@type/vue'
-import type { VNode } from '@type/vnode'
 import installRenderHelpers from './render-helpers'
 import type { Component } from '@type/vue'
 import { compileToFunctions } from '@/compiler'
@@ -8,15 +7,38 @@ import { parseElOption, getOutHtml } from '@/common/utils'
 import { CompilerOptions } from '@type/compiler'
 import type { ComponentOptions } from '@type/options'
 import { mountComponent } from './lifecycle'
+import VNodeClass, { createEmptyVNode } from '@/vnode/vnode'
+import { createElement } from '@/vnode/create-element'
+
+// 记录当前调用 render 函数的组件
+export let currentRenderingInstance: Component |null = null
+export function initRender (vm:Component) {
+  vm.$createElement = (tag, data, children) => createElement(vm, tag, data, children)
+}
 export function renderMixin (Vue: GlobalAPI) {
   // 给 Vue 原型添加渲染帮助方法，以便 render 函数用到
   installRenderHelpers(Vue.prototype)
   Vue.prototype._render = function () {
-    // const vm:Component = this
+    const vm:Component = this
+    const { render } = vm.$options
 
+    let vnode
+
+    try {
+      currentRenderingInstance = vm
+      vnode = render.call(vm, vm.$createElement)
+    } catch (error) {
+      console.warn('render 函数执行错误！！！')
+    } finally {
+      currentRenderingInstance = null
+    }
     // 后续补充
-    const vnode = {}
-    return vnode as VNode
+
+    if (!(vnode instanceof VNodeClass)) {
+      console.error('render 函数必须返回 VNode 类型的值')
+      vnode = createEmptyVNode()
+    }
+    return vnode
   }
 
   /**

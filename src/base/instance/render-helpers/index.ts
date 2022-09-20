@@ -9,8 +9,8 @@ export default function installRenderHelpers (target:GlobalAPI['prototype']) {
   // _e
   // _s
   // 与源码不相同，_c 可以放在这里进行初始化，这样只需要初始化一次
-  target._c = function (tag, children) {
+  target._c = function (tag, data, children) {
     const vm:Component = this
-    return createElement(vm, tag, children)
+    return createElement(vm, tag, data, children)
   }
 }

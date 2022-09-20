@@ -47,3 +47,11 @@ export function cached<R> (fn:(val: string) => R):(val: string) => R {
     return hit || (cached[val] = fn(val))
   }
 }
+
+export const isArray = Array.isArray
+
+export function isPrimitive (value: any): boolean {
+  return (typeof value === 'string' || typeof value === 'boolean' || typeof value === 'number' || typeof value === 'symbol')
+}
+
+export const isTrue = (v:any):boolean => v === true

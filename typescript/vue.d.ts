@@ -1,5 +1,5 @@
 import { vueLifecycleHooks } from './hook'
-import { VNode } from './vnode'
+import { VNode, VNodeChildren } from './vnode'
 import { ComponentOptions } from './options'
 
 type plainObj<T = any> = {[key: string | number | symbol] :T}
@@ -40,9 +40,10 @@ export declare class Component {
 
   // render-helper
   _v(text:string | number):VNode
-  _c(tag:string, children:(VNode | string)[] | string):VNode
+  _c(tag:string, data?: Record<string, any>, children?:VNodeChildren, normalizationType?: any):VNode
 
   $mount(el: Element | string): Component
+  $createElement(tag?: string, data?: Record<string, any>, children?:VNodeChildren): VNode
 }
 
 export type patchFn = Component['_patch']
