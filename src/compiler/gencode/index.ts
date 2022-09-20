@@ -1,4 +1,4 @@
-import { ASTElement, CompilerOptions } from '@type/compiler'
+import { ASTElement, ASTExpression, ASTNode, ASTText, CompilerOptions } from '@type/compiler'
 
 type DataGenFunction = (el:ASTElement) => string
 export class CodegenState {
@@ -21,6 +21,46 @@ export function generate (ast: ASTElement | void, options: CompilerOptions):Code
   }
 }
 
-function genElement (ast: ASTElement, state:CodegenState):string {
-  return ''
+function genElement (el: ASTElement, state:CodegenState):string {
+  const data = genData(el, state)
+  const children = genChildren(el, state)
+  const code = `_c('${el.tag}'${data ? ',' + data : ''}${children ? `,${children}` : ''})`
+  return code
+}
+
+export function genData (el:ASTElement, state:CodegenState):string {
+  return '{}'
+}
+
+export function genChildren (el: ASTElement, state: CodegenState) {
+  const children = el.children
+  if (children.length) {
+    const gen = genNode
+
+    return `[${children.map(c => gen(c, state)).join(',')}]`
+  }
+}
+
+export function genNode (node:ASTNode, state: CodegenState):string {
+  if (node.type === 1) {
+    return genElement(node, state)
+  } else if (node.type === 3 && node.isComment) {
+    return genComment(node)
+  } else {
+    return genText(node)
+  }
+}
+
+export function genText (text: ASTText | ASTExpression):string {
+  return `_v(${text.type === 2 ? text.expression : transformSpecialNewLines(JSON.stringify(text.text))})`
+}
+
+export function genComment (comment: ASTText):string {
+  return `_e(${JSON.stringify(comment.text)})`
+}
+
+// 字符串 '\u2028' 中 \ 会被当成转义符，因此需要在此转义
+// \u2028 \u2029 为行分隔符 & 段落分隔符
+function transformSpecialNewLines (text: string) {
+  return text.replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029')
 }

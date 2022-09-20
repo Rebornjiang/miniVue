@@ -19,11 +19,13 @@ declare type ASTElement = {
 
   start?: number
   end?: number
+  forbidden?: boolean
 }
 
 declare type ASTExpression = {
   type: 2
   expression: string
+  tokens: (string | Record<string, string>)[]
   text: string
 }
 

@@ -45,17 +45,18 @@ const startTagClose = /^\s*(\/?)>/
 const endTag = new RegExp(`^<\\/${qnameCapture}[^>]*>`)
 
 // # utils For CurFunc
+const regexpCache:Record<string, RegExp> = {}
 export const isPlainTextElement = makeMap('script,style,textarea')
 
 export function parseHTML (html: string, options: parseHTMLOptions) {
   const { start, end: handleCloseTag, chars, comment, shouldKeepComment, isUnaryTag } = options
-  console.log({ start, handleCloseTag, chars, comment })
   const stack: startTag[] = []
-  let lastTag, last
+  let lastTag:string | undefined, last
 
   console.log(stack, last)
   let index = 0 // 这个变量表示整个 html 中当前正在处理的 string 的开始 idx
   while (html) {
+    last = html
     if (!lastTag || !isPlainTextElement(lastTag)) {
       let textEnd = html.indexOf('<') // 表示文本结束的  idx
       if (textEnd === 0) {
@@ -134,8 +135,30 @@ export function parseHTML (html: string, options: parseHTMLOptions) {
       }
     } else {
       // 处理纯文本内容的元素 script,style,textarea
+      let endTagLength = 0
+      const stackedTag = lastTag.toLowerCase()
+      // 创建并缓存正则
+      const reStackedTag = regexpCache[stackedTag] || (regexpCache[stackedTag] = new RegExp(`([\\s\\S]*?)(</${stackedTag}[^>]*>)`, 'i'))
+
+      const rest = html.replace(reStackedTag, (all, text, endTag) => {
+        endTagLength = endTag.length
+        chars?.(text)
+        return ''
+      })
+      // 下次处理 html 的开始索引
+      index += html.length - rest.length
+      html = rest
+      parseEndTag(stackedTag, index - endTagLength, index)
+    }
+
+    if (last === html) {
+      console.error('出现了意想不到的错误，未进行任何 html 的解析')
+      chars?.(html)
+      break
     }
   }
+
+  parseEndTag()
 
   function advance (cutIdx: number) {
     index += cutIdx
@@ -176,7 +199,7 @@ export function parseHTML (html: string, options: parseHTMLOptions) {
 
     // 浏览器关于 html 的容错机制的处理
 
-    // 用 逻辑与 为了兼容组件的处理
+    // 用 逻辑与 为了兼容 一元组件写法 的处理
     const unary = isUnaryTag?.(tagName) || !!unarySlash
 
     const l = match.attrs.length
@@ -196,6 +219,7 @@ export function parseHTML (html: string, options: parseHTMLOptions) {
         start: match.start,
         end: match.end
       })
+      lastTag = tagName
     }
 
     if (start) {
@@ -232,7 +256,7 @@ export function parseHTML (html: string, options: parseHTMLOptions) {
       }
 
       stack.length = pos
-      lastTag = pos && stack[pos - 1].tag
+      lastTag = stack[pos - 1]?.tag
     }
   }
 }

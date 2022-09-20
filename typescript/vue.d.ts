@@ -21,6 +21,7 @@ export declare class Component {
   $el: string | Element
   $data: Record<string, any>
   $options: ComponentOptions
+  $vnode: VNode
 
   // private
   _uid: number

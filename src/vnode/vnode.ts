@@ -7,6 +7,8 @@ export default class VNode {
   // eslint-disable-next-line no-use-before-define
   children?: VNode[] | null
 
+  isComment?: boolean
+
   constructor (tag?: string, children?: VNode[] | null, text?:string, elm?:Node) {
     this.tag = tag
     this.children = children
@@ -18,4 +20,11 @@ export default class VNode {
 // 用于快速创建一个 文本 vnode
 export const createTextVNode = (text: string | number) => {
   return new VNode(undefined, undefined, String(text))
+}
+
+export const createEmptyVNode = (text: string = '') => {
+  const node = new VNode()
+  node.text = text
+  node.isComment = true
+  return node
 }

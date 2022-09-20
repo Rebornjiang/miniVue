@@ -7,6 +7,7 @@ import { compileToFunctions } from '@/compiler'
 import { parseElOption, getOutHtml } from '@/common/utils'
 import { CompilerOptions } from '@type/compiler'
 import type { ComponentOptions } from '@type/options'
+import { mountComponent } from './lifecycle'
 export function renderMixin (Vue: GlobalAPI) {
   // 给 Vue 原型添加渲染帮助方法，以便 render 函数用到
   installRenderHelpers(Vue.prototype)
@@ -53,7 +54,6 @@ export function renderMixin (Vue: GlobalAPI) {
         options.render = render as ComponentOptions['render']
       }
     }
-
-    return vm
+    return mountComponent(vm, el)
   }
 }
