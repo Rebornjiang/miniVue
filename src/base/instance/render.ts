@@ -9,11 +9,12 @@ import type { ComponentOptions } from '@type/options'
 import { mountComponent } from './lifecycle'
 import VNodeClass, { createEmptyVNode } from '@/vnode/vnode'
 import { createElement } from '@/vnode/create-element'
+import { VNode } from '@type/vnode'
 
 // 记录当前调用 render 函数的组件
 export let currentRenderingInstance: Component |null = null
 export function initRender (vm:Component) {
-  vm.$createElement = (tag, data, children) => createElement(vm, tag, data, children)
+  vm.$createElement = (tag, data, children, normalizationType) => createElement(vm, tag, data, children, normalizationType, true)
 }
 export function renderMixin (Vue: GlobalAPI) {
   // 给 Vue 原型添加渲染帮助方法，以便 render 函数用到
@@ -26,7 +27,7 @@ export function renderMixin (Vue: GlobalAPI) {
 
     try {
       currentRenderingInstance = vm
-      vnode = render.call(vm, vm.$createElement)
+      vnode = render.call(vm, vm.$createElement as () => VNode)
     } catch (error) {
       console.warn('render 函数执行错误！！！')
     } finally {
@@ -38,6 +39,7 @@ export function renderMixin (Vue: GlobalAPI) {
       console.error('render 函数必须返回 VNode 类型的值')
       vnode = createEmptyVNode()
     }
+    console.log({ vnode }, 'VVVVVVVVVV')
     return vnode
   }
 

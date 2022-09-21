@@ -122,7 +122,6 @@ export function parseHTML (html: string, options: parseHTMLOptions) {
           textEnd += next
           rest = html.slice(textEnd)
         }
-        console.log(text, next)
         text = html.substring(0, textEnd)
       }
 

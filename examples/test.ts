@@ -1,5 +1,4 @@
 import Vue from '../src/main'
-console.dir(Vue)
 
 const vm = new Vue({
   el: '#app',

@@ -76,6 +76,7 @@ export function parse (template: string, options: CompilerOptions):ASTElement {
         let child:ASTNode | undefined
         // 处理插值表达式
         const res = parseText(text)
+        console.log({ res })
         if (res) {
           child = {
             type: 2,

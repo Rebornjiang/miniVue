@@ -1,6 +1,7 @@
 
-const defaultTagRE = /\{\{((?:.|\r?\n)+?)\}\}/
+const defaultTagRE = /\{\{((?:.|\r?\n)+?)\}\}/g
 export function parseText (text: string, delimiters?: [string, string]) {
+  console.log({ text })
   const tagRE = delimiters ? /./ : defaultTagRE
   if (!tagRE.test(text)) return undefined
   const tokens: string[] = []
@@ -12,7 +13,7 @@ export function parseText (text: string, delimiters?: [string, string]) {
   let lastIndex = (tagRE.lastIndex = 0)
 
   let match, tokenValue
-  while (match = tagRE.exec(text)) {
+  while ((match = tagRE.exec(text))) {
     const index = match.index
 
     // 处理 text 中除了插值表达式的文本
@@ -23,6 +24,7 @@ export function parseText (text: string, delimiters?: [string, string]) {
 
     // 插值表达式, 目前暂不需要处理 filter 语法
     const exp = match[1].trim()
+    console.log({ exp })
     tokens.push(`_s(${exp})`)
     rawTokens.push({ '@binding': exp })
     lastIndex = index + match[0].length

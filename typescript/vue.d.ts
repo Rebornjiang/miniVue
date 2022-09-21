@@ -40,10 +40,12 @@ export declare class Component {
 
   // render-helper
   _v(text:string | number):VNode
-  _c(tag:string, data?: Record<string, any>, children?:VNodeChildren, normalizationType?: any):VNode
+  _c(tag:string, data?: Record<string, any>, children?:VNodeChildren, normalizationType?: any):VNode |VNode[]
+  _s(val: any):string
+  _e(text: string):VNode
 
   $mount(el: Element | string): Component
-  $createElement(tag?: string, data?: Record<string, any>, children?:VNodeChildren): VNode
+  $createElement(tag?: string, data?: Record<string, any>, children?:VNodeChildren, normalizationType?: any): VNode |VNode[]
 }
 
 export type patchFn = Component['_patch']

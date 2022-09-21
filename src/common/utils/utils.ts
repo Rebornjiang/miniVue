@@ -55,3 +55,7 @@ export function isPrimitive (value: any): boolean {
 }
 
 export const isTrue = (v:any):boolean => v === true
+
+export function isDef<T = any> (val: T): val is NonNullable<T> {
+  return val !== undefined && val !== null
+}

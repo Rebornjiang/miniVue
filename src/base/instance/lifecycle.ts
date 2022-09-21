@@ -7,8 +7,10 @@ export function lifecycleMixin (Vue: GlobalAPI) {
   // 初始化 patch 方法
   Vue.prototype._patch = patch
   Vue.prototype._update = function (vnode:VNode) {
-    // const vm:Component = this
+    const vm:Component = this
     // console.log(vm)
+    // basic render， $el is Element
+    vm.$el = patch(vm.$el as Element, vnode)
   }
 }
 
