@@ -14,6 +14,8 @@ export function initMixin (Vue:GlobalAPI) {
       vm.$options = mergeOptions(Vue.options || {}, options, vm)
     }
 
+    // 初始化 render 函数中的 this,为了检查 渲染函数调用时所访问的属性是否符合规范，对于不符合规范给出 vue warn
+
     initState(vm)
 
     if (vm.$options.el) {

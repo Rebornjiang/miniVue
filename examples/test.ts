@@ -3,7 +3,8 @@ import Vue from '../src/main'
 const vm = new Vue({
   el: '#app',
   data: {
-    msg: 'hello My Mini Vue'
+    msg: 'dsfdsf',
+    header: 'zhelishiheader'
   }
 })
 

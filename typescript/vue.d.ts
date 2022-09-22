@@ -28,6 +28,8 @@ export declare class Component {
   _data: Record<string, any>
   _isMounted: boolean
   _isVue: boolean
+  // eslint-disable-next-line no-use-before-define
+  _renderProxy: Component | ProxyConstructor
 
   // 原型上的方法
   // public

@@ -1,6 +1,6 @@
 import { GlobalAPI } from '@type/global-api'
 import { Component } from '@type/vue'
-import { isPlainObject, isValidVariable, noop } from '@/common/utils/'
+import { isPlainObject, validVariable, noop } from '@/common/utils/'
 export function stateMixin (Vue:GlobalAPI) {
   // 曝露出 $data ，给其作一层代理, 代理 vm._data
   const dataDef = {
@@ -33,7 +33,8 @@ function initData (vm: Component) {
     const keys = Object.keys(data)
     for (const key of keys) {
       // 需要校验当前 key 是否再 props ，methods 中有过定义
-      if (isValidVariable(key)) {
+
+      if (validVariable(key)) {
         proxy(vm, '_data', key)
       }
     }

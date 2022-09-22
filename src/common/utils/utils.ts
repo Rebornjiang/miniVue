@@ -15,7 +15,7 @@ export function isPlainObject<T = boolean> (obj:any):obj is T {
 }
 
 // 检查是否是以 $ || _ 开头的
-export function isValidVariable (v: string):boolean {
+export function validVariable (v: string):boolean {
   const ascCode = v.charCodeAt(0)
   return ascCode !== 0x24 && ascCode !== 0x5f
 }

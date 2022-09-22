@@ -4,12 +4,12 @@ import installRenderHelpers from './render-helpers'
 import type { Component } from '@type/vue'
 import { compileToFunctions } from '@/compiler'
 import { parseElOption, getOutHtml } from '@/common/utils'
-import { CompilerOptions } from '@type/compiler'
+import type{ CompilerOptions } from '@type/compiler'
 import type { ComponentOptions } from '@type/options'
 import { mountComponent } from './lifecycle'
 import VNodeClass, { createEmptyVNode } from '@/vnode/vnode'
 import { createElement } from '@/vnode/create-element'
-import { VNode } from '@type/vnode'
+import type{ VNode } from '@type/vnode'
 
 // 记录当前调用 render 函数的组件
 export let currentRenderingInstance: Component |null = null
@@ -29,7 +29,7 @@ export function renderMixin (Vue: GlobalAPI) {
       currentRenderingInstance = vm
       vnode = render.call(vm, vm.$createElement as () => VNode)
     } catch (error) {
-      console.warn('render 函数执行错误！！！')
+      console.warn('render 函数执行错误！！！', error)
     } finally {
       currentRenderingInstance = null
     }
