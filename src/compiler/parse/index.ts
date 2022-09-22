@@ -40,7 +40,6 @@ export function parse (template: string, options: CompilerOptions):ASTElement {
     shouldKeepComment: true,
     isUnaryTag: options.isUnaryTag,
     start (tag, attrs, unary, start, end) {
-      console.log({ tag, attrs, unary, start, end })
       const element = createASTElement(tag, attrs, currentParent)
 
       if (isForbiddenTag(element)) {
@@ -76,7 +75,6 @@ export function parse (template: string, options: CompilerOptions):ASTElement {
         let child:ASTNode | undefined
         // 处理插值表达式
         const res = parseText(text)
-        console.log({ res })
         if (res) {
           child = {
             type: 2,

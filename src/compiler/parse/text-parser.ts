@@ -1,7 +1,6 @@
 
 const defaultTagRE = /\{\{((?:.|\r?\n)+?)\}\}/g
 export function parseText (text: string, delimiters?: [string, string]) {
-  console.log({ text })
   const tagRE = delimiters ? /./ : defaultTagRE
   if (!tagRE.test(text)) return undefined
   const tokens: string[] = []
@@ -24,7 +23,6 @@ export function parseText (text: string, delimiters?: [string, string]) {
 
     // 插值表达式, 目前暂不需要处理 filter 语法
     const exp = match[1].trim()
-    console.log({ exp })
     tokens.push(`_s(${exp})`)
     rawTokens.push({ '@binding': exp })
     lastIndex = index + match[0].length

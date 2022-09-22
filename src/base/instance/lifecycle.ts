@@ -8,7 +8,6 @@ export function lifecycleMixin (Vue: GlobalAPI) {
   Vue.prototype._patch = patch
   Vue.prototype._update = function (vnode:VNode) {
     const vm:Component = this
-    // console.log(vm)
     // basic render， $el is Element
     vm.$el = patch(vm.$el as Element, vnode)
   }

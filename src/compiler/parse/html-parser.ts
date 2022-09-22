@@ -53,7 +53,6 @@ export function parseHTML (html: string, options: parseHTMLOptions) {
   const stack: startTag[] = []
   let lastTag:string | undefined, last
 
-  console.log(stack, last)
   let index = 0 // 这个变量表示整个 html 中当前正在处理的 string 的开始 idx
   while (html) {
     last = html

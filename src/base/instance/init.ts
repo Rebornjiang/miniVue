@@ -2,6 +2,7 @@ import type { constructorOptions, Component } from '@type/vue'
 import type { GlobalAPI } from '@type/global-api'
 import { mergeOptions } from '@/common/utils/'
 import { initState } from './state'
+import { initProxy } from './proxy'
 
 let uid = 0
 export function initMixin (Vue:GlobalAPI) {
@@ -15,6 +16,7 @@ export function initMixin (Vue:GlobalAPI) {
     }
 
     // 初始化 render 函数中的 this,为了检查 渲染函数调用时所访问的属性是否符合规范，对于不符合规范给出 vue warn
+    initProxy(vm)
 
     initState(vm)
 

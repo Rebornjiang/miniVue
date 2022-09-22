@@ -35,7 +35,7 @@ const defaultStrategy = function (parentVal: any, childVal: any):any {
 // data 选项合并策略
 strategy.data = function (parentVal:any, childVal:any, vm?: Component) {
   if (!vm) {
-    console.log('子组件mergeOptions来到这里')
+    // console.log('子组件mergeOptions来到这里')
   }
   const args = arguments as unknown as [any, any, Component]
   return mergeDataOrFn(...args)

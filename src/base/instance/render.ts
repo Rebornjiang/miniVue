@@ -27,7 +27,7 @@ export function renderMixin (Vue: GlobalAPI) {
 
     try {
       currentRenderingInstance = vm
-      vnode = render.call(vm, vm.$createElement as () => VNode)
+      vnode = render.call(vm._renderProxy, vm.$createElement as () => VNode)
     } catch (error) {
       console.warn('render 函数执行错误！！！', error)
     } finally {
@@ -39,7 +39,6 @@ export function renderMixin (Vue: GlobalAPI) {
       console.error('render 函数必须返回 VNode 类型的值')
       vnode = createEmptyVNode()
     }
-    console.log({ vnode }, 'VVVVVVVVVV')
     return vnode
   }
 
