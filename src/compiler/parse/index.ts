@@ -16,6 +16,9 @@ export type parseHTMLOptions = {
 
 const decodeHTMLCached = cached(he.decode)
 export function parse (template: string, options: CompilerOptions):ASTElement {
+  // 解析 options
+  const preserveWhitespace = options.preserveWhitespace !== false
+
   let root:ASTElement
   const stack:ASTElement[] = []
   let currentParent:ASTElement
@@ -68,6 +71,11 @@ export function parse (template: string, options: CompilerOptions):ASTElement {
       if (text.trim()) {
         // 调用 he lib 对 文本内容进行解码
         finalText = decodeHTMLCached(text)
+      } else if (!children.length) {
+        // 处理当前标签的到第一个子节点的这个换行符，不需要进行保留空白换行符
+        finalText = ''
+      } else if (preserveWhitespace) {
+        finalText = ' '
       }
 
       if (finalText) {
