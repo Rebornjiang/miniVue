@@ -2,7 +2,7 @@ import Vue from '../src/main'
 
 const vm = new Vue({
   data: {
-    msg: 'dsfdsf',
+    _msg: 'dsfdsf',
     header: 'zhelishiheader'
   }
 })
