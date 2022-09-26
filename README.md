@@ -1,7 +1,2 @@
-# miniVue
-
-# Vue 的构成
-可以将 Vue 分为以下几大模块
-- 响应式
-- 编译器
-- vdom
+# base-render
+基础渲染仅将 options data 中的数据渲染出来
