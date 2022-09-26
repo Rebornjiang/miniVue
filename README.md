@@ -1,8 +1,9 @@
-# base-render
-基础渲染仅将 options data 中的数据渲染出来;
+# responsiveData-and-nativeEventForDom
+
+响应式数据：
+初始化 state： computed & data & watch
+
+dom 事件
 
 # 模块实现
-- base
-- compiler
-- vnode
 
