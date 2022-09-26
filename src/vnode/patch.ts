@@ -2,7 +2,7 @@
 import { isArray, isDef, isPrimitive, isTrue } from '@/common/utils'
 import type{ VNode } from '@type/vnode'
 import type { patchFn } from '@type/vue'
-import * as nodeOps from './node-ops'
+import * as nodeOps from './helpers/node-ops'
 // nodeOps 类型
 type TNodeOps = typeof nodeOps
 type NodeOps = {

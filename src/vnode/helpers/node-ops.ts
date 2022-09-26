@@ -1,4 +1,4 @@
-import VNode from './vnode'
+import VNode from '../vnode'
 
 export function parentNode (node: Node) {
   return node.parentNode

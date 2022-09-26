@@ -17,6 +17,7 @@ export default class VNode {
     this.text = text
     this.data = data
     this.elm = elm
+    this.isComment = false
   }
 }
 
