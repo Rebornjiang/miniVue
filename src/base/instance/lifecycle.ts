@@ -3,6 +3,7 @@ import type{ VNode } from '@type/vnode'
 import type{ Component } from '@type/vue'
 import patch from '@/vnode/initPatch'
 import { createEmptyVNode } from '@/vnode/vnode'
+import { Watcher } from '@/observer/watcher'
 export function lifecycleMixin (Vue: GlobalAPI) {
   // 初始化 patch 方法
   Vue.prototype._patch = patch
@@ -32,7 +33,7 @@ export function mountComponent (vm: Component, el: Element | null | undefined):C
     vm._update(vm._render())
   }
   // 仅渲染
-  updateComponent()
+  vm._watcher = new Watcher(updateComponent)
 
   if (vm.$vnode) {
     vm._isMounted = true

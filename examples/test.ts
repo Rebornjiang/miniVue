@@ -2,18 +2,15 @@ import Vue from '../src/main'
 
 const vm = new Vue({
   data: {
-    _msg: 'dsfdsf',
-    header: 'zhelishiheader'
+    msg: 'hello world',
+    content: 'this is content',
+    children: {
+      sonMsg: 'son MSG'
+    }
   },
-  render (h:any) {
-    return h('div', { attrs: { id: '#app' } }, [
-      'textContent',
-      ['nested-1-content', 'nested-1-content'],
-      h('h2', 'h1Element'),
-      ['nested-1-content', [h('strong', '2323'), 'nested-2-content']]
-
-    ])
+  methods: {
+    testFn1 () {},
+    testFn2 () {}
   }
 })
-
 vm.$mount('#app')

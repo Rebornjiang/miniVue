@@ -4,8 +4,12 @@ import type{ Component } from '@type/vue'
 
 type PrefixOfFnName = `_${string}`
 
+type RemoveIdxSign<I> = {
+  [K in keyof I as string extends K ? never : number extends K ? never : K]: I[K]
+}
+// 运算需要去掉索引签名类型
 export type ExtractPrefixType<I, P> = {
-  [K in Extract<keyof I, P> as I[K] extends Function ? K : never]: I[K]
+  [K in Extract<keyof I, P> as I[K] extends Function ? K : never ]: I[K]
 }
 
-export type VueCtorPrototype = ExtractPrefixType<Component, PrefixOfFnName>
+export type VueCtorPrototype = ExtractPrefixType<RemoveIdxSign<Component>, PrefixOfFnName>

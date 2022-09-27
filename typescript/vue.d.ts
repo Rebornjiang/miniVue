@@ -1,6 +1,7 @@
 import { vueLifecycleHooks } from './hook'
 import { VNode, VNodeChildren } from './vnode'
 import { ComponentOptions } from './options'
+import { Watcher } from '@/observer/watcher'
 
 type plainObj<T = any> = {[key: string | number | symbol] :T}
 
@@ -28,6 +29,7 @@ export declare class Component {
   _data: Record<string, any>
   _isMounted: boolean
   _isVue: boolean
+  _watcher: Watcher
   // eslint-disable-next-line no-use-before-define
   _renderProxy: Component | ProxyConstructor
 
@@ -48,6 +50,9 @@ export declare class Component {
 
   $mount(el: Element | string): Component
   $createElement(tag?: string, data?: Record<string, any>, children?:VNodeChildren, normalizationType?: any): VNode |VNode[]
+
+  // eslint-disable-next-line no-undef
+  [key:string]: any // 给 实例挂载 methods 中的方法
 }
 
 export type patchFn = Component['_patch']

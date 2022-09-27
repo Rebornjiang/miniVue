@@ -60,3 +60,7 @@ export const isFalse = (v:any):boolean => v === false
 export function isDef<T = any> (val: T): val is NonNullable<T> {
   return val !== undefined && val !== null
 }
+
+export function bind (target: object, fn:Function):Function {
+  return Function.prototype.bind.call(fn, target)
+}
