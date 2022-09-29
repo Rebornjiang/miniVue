@@ -64,3 +64,14 @@ export function isDef<T = any> (val: T): val is NonNullable<T> {
 export function bind (target: object, fn:Function):Function {
   return Function.prototype.bind.call(fn, target)
 }
+
+export function def (target: object, key: string, val:any, writable = true) {
+  Object.defineProperty(target, key, {
+    value: val,
+    writable,
+    configurable: true,
+    enumerable: true
+  })
+}
+
+export const hasProto = '__proto__' in {}

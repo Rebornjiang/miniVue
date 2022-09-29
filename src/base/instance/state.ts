@@ -2,7 +2,7 @@ import { GlobalAPI } from '@type/global-api'
 import { Component } from '@type/vue'
 import { isPlainObject, validVariable, noop, bind, hasOwn } from '@/common/utils/'
 import { ComponentOptions } from '@type/options'
-import { observe } from '@/observer/observe'
+import { observe } from '@/observer'
 export function stateMixin (Vue:GlobalAPI) {
   // 曝露出 $data ，给其作一层代理, 代理 vm._data
   const dataDef = {

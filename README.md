@@ -3,7 +3,12 @@
 响应式数据：
 初始化 state： computed & data & watch
 
-dom 事件
+## data
+### plainObject
+
+
+### array
+
 
 # 模块实现
 
