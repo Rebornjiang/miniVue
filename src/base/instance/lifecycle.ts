@@ -33,8 +33,8 @@ export function mountComponent (vm: Component, el: Element | null | undefined):C
   }
   // 仅渲染
   updateComponent()
-
-  if (vm.$vnode) {
+  // 标记 root 组件为挂载
+  if (vm.$vnode == null) {
     vm._isMounted = true
   }
   return vm
