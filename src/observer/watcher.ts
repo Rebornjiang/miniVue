@@ -40,8 +40,10 @@ export class Watcher {
 
   get () {
     pushTarget(this)
+    const vm = this.vm
+    let value
     try {
-      const value = this.getter()
+      value = this.getter.call(vm, vm)
       console.log(value)
     } catch (error) {
       console.warn('watcher getter 出错哦')
@@ -49,16 +51,17 @@ export class Watcher {
       popTarget()
       this.cleanDepend()
     }
+    return value
   }
 
   evaluate () {
-    this.value = this.getter()
+    this.value = this.get()
     this.dirty = false
   }
 
   depend () {
     let length = this.deps.length
-    while (--length) {
+    while (length--) {
       this.deps[length].depend()
     }
   }
@@ -83,6 +86,9 @@ export class Watcher {
 
     this.deps = this.newDeps
     this.depIds = this.newDepIds
+
+    this.newDeps = []
+    this.newDepIds = []
   }
 
   update () {

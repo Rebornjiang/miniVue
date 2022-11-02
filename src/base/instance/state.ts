@@ -20,6 +20,7 @@ export function stateMixin (Vue:GlobalAPI) {
 }
 
 export function initState (vm:Component) {
+  vm._watchers = []
   const opts = vm.$options
 
   if (opts.methods) initMethods(vm, opts)
@@ -54,29 +55,41 @@ function initComputed (vm: Component, computed: any) {
 
 function createComputedGetter (key:string) {
   return function ComputedGetter () {
-    const watcher:Watcher = this._computedWatchers[key]
+    const watcher:Watcher = this._computedWatchers && this._computedWatchers[key]
 
-    if (watcher.dirty) {
-      watcher.evaluate()
-    }
+    if (watcher) {
+      if (watcher.dirty) {
+        watcher.evaluate()
+      }
 
-    if (Dep.target) {
-      watcher.depend()
+      if (Dep.target) {
+        watcher.depend()
+      }
     }
 
     return watcher.value
   }
 }
 
-function defineComputed (vm: Component, key: string, userDef: Function | {get:Function, set?:Function}) {
+function ComputedGetterOfNoCache (fn:Function) {
+  return function ComputedGetter () {
+    return fn.call(this, this)
+  }
+}
+
+function defineComputed (vm: Component, key: string, userDef: Function | {get:Function, set?:Function, [key:string]:any}) {
   let getter, setter
   if (typeof userDef === 'function') {
     getter = createComputedGetter(key)
   } else {
-    getter = createComputedGetter(key)
+    // computed 不带缓存，相当于函数
+    getter = userDef.cache !== false
+      ? createComputedGetter(key)
+      : ComputedGetterOfNoCache(userDef.get)
+
     setter = userDef.set || noop
   }
-  Object.defineProperty(vm, key, { get: getter, set: setter as any })
+  Object.defineProperty(vm, key, { get: getter, set: (setter || noop) as any })
 }
 
 function initMethods (vm:Component, options: ComponentOptions) {
@@ -95,7 +108,7 @@ function initMethods (vm:Component, options: ComponentOptions) {
 }
 
 function initData (vm: Component) {
-  let { data, methods } = vm.$options
+  let { data, methods = {} } = vm.$options
 
   data = vm._data = typeof data === 'function' ? getData(data, vm) : data || {}
   // 将类型缩小

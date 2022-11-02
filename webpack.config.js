@@ -8,7 +8,7 @@ module.exports = {
     vue: './src/main.ts',
     test: './examples/test.ts'
   },
-  devtool: 'inline-source-map',
+  devtool: 'source-map',
   module: {
     rules: [
       {
@@ -26,7 +26,6 @@ module.exports = {
     }
   },
   devServer: {
-    static: './dist',
     hot: true
   },
   output: {

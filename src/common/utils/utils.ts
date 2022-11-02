@@ -65,12 +65,12 @@ export function bind (target: object, fn:Function):Function {
   return Function.prototype.bind.call(fn, target)
 }
 
-export function def (target: object, key: string, val:any, writable = true) {
+export function def (target: object, key: string, val:any, enumerable?: boolean) {
   Object.defineProperty(target, key, {
     value: val,
-    writable,
     configurable: true,
-    enumerable: true
+    writable: true,
+    enumerable: !!enumerable
   })
 }
 

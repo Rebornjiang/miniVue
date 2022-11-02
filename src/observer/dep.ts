@@ -41,10 +41,11 @@ Dep.target = null
 
 export function pushTarget (target: any) {
   watcherStack.push(target)
-  Dep.target = watcherStack[watcherStack.length - 1]
+  Dep.target = target
 }
 
 export function popTarget () {
   if (watcherStack.length < 1) return
-  Dep.target = watcherStack.pop()
+  watcherStack.pop()
+  Dep.target = watcherStack[watcherStack.length - 1]
 }
