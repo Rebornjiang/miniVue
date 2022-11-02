@@ -15,3 +15,5 @@
 整个 base 模块就像是桥梁连接者 compiler 与 vnode 模块，具体流程如下：
 _init 方法用于创建 vue 实例 -> $mount 方法负责调用 compiler 将模板转换为 render Function （不考虑用户自定义render的情况） -> mountComponent 来调用 render Function 并将得到的 VDom 给到 patch 函数 -> 最后由 patch 函数根据 VDom 生成真实的 Dom 并挂载到页面上
 
+# 脑图
+[当前模块实现脑图](https://www.yuque.com/docs/share/93100e6c-e85d-4bcb-a452-42ff97cab352?# )《1. For-baseRender》
