@@ -5,7 +5,7 @@ import patch from '@/vnode/initPatch'
 import { createEmptyVNode } from '@/vnode/vnode'
 export function lifecycleMixin (Vue: GlobalAPI) {
   // 初始化 patch 方法
-  Vue.prototype._patch = patch
+  // Vue.prototype._patch = patch
   Vue.prototype._update = function (vnode:VNode) {
     const vm:Component = this
     // basic render， $el is Element
