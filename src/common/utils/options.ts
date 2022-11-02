@@ -1,6 +1,6 @@
 import type { Component } from '@type/vue'
 import type { ComponentOptions } from '@type/options'
-import { hasOwn } from './utils'
+import { extend, hasOwn, isPlainObject } from './utils'
 
 // 创建合并策略
 const strategy = Object.create(null)
@@ -39,6 +39,21 @@ strategy.data = function (parentVal:any, childVal:any, vm?: Component) {
   }
   const args = arguments as unknown as [any, any, Component]
   return mergeDataOrFn(...args)
+}
+
+strategy.computed = function (parentVal: any, childVal: any) {
+  if (childVal) {
+    // 校验 childVal 传入的是否是 object，仅在开发环境上进行校验
+    !isPlainObject(childVal) && (() => console.warn('computed must be an Record<string,Function | {get:Function, set: Function,sync: boolean, [key: string] : any}'))()
+  }
+  if (!parentVal) return childVal
+  const ret = Object.create(null)
+
+  if (childVal && parentVal) {
+    extend(ret, parentVal)
+    extend(ret, childVal)
+  }
+  return ret
 }
 
 export function mergeOptions (

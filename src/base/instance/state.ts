@@ -3,6 +3,8 @@ import { Component } from '@type/vue'
 import { isPlainObject, validVariable, noop, bind, hasOwn } from '@/common/utils/'
 import { ComponentOptions } from '@type/options'
 import { observe } from '@/observer'
+import { Watcher } from '@/observer/watcher'
+import { Dep } from '@/observer/dep'
 export function stateMixin (Vue:GlobalAPI) {
   // 曝露出 $data ，给其作一层代理, 代理 vm._data
   const dataDef = {
@@ -25,7 +27,56 @@ export function initState (vm:Component) {
 
   if (opts.data) {
     initData(vm)
+  } else {
+    observe(vm._data = {})
   }
+
+  if (opts.computed) initComputed(vm, opts.computed)
+}
+
+const ComputedOptions = {
+  lazy: true
+}
+function initComputed (vm: Component, computed: any) {
+  const watchers:Component['_computedWatchers'] = (vm._computedWatchers = {})
+  const keys = Object.keys(computed)
+  for (const key of keys) {
+    const userDef = computed[key]
+    const getter = typeof userDef === 'function' ? userDef : userDef.get
+
+    watchers[key] = new Watcher(vm, getter, noop, ComputedOptions)
+
+    if (!(key in vm)) {
+      defineComputed(vm, key, userDef)
+    }
+  }
+}
+
+function createComputedGetter (key:string) {
+  return function ComputedGetter () {
+    const watcher:Watcher = this._computedWatchers[key]
+
+    if (watcher.dirty) {
+      watcher.evaluate()
+    }
+
+    if (Dep.target) {
+      watcher.depend()
+    }
+
+    return watcher.value
+  }
+}
+
+function defineComputed (vm: Component, key: string, userDef: Function | {get:Function, set?:Function}) {
+  let getter, setter
+  if (typeof userDef === 'function') {
+    getter = createComputedGetter(key)
+  } else {
+    getter = createComputedGetter(key)
+    setter = userDef.set || noop
+  }
+  Object.defineProperty(vm, key, { get: getter, set: setter as any })
 }
 
 function initMethods (vm:Component, options: ComponentOptions) {

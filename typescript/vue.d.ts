@@ -30,6 +30,8 @@ export declare class Component {
   _isMounted: boolean
   _isVue: boolean
   _watcher: Watcher
+  _watchers: Watcher[]
+  _computedWatchers: Record<string, Watcher>
   // eslint-disable-next-line no-use-before-define
   _renderProxy: Component | ProxyConstructor
 

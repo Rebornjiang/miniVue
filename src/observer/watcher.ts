@@ -1,5 +1,7 @@
+import { noop } from '@/common/utils'
+import { Component } from '@type/vue'
 import { Dep, popTarget, pushTarget } from './dep'
-let watcherId = 0
+let uid = 0
 export class Watcher {
   id: number
   depIds: number[] = []
@@ -8,12 +10,32 @@ export class Watcher {
   newDeps:Dep[] = []
   getter:any
 
-  constructor (fn: Function) {
-    this.id = ++watcherId
+  lazy?: boolean
+  vm?: Component
+  dirty?:boolean
 
-    this.getter = fn
+  value:any
+  constructor (vm:Component, expOrFn: string | Function, cb:Function, options:any, isRender?:boolean) {
+    this.id = ++uid
 
-    this.get()
+    if (vm) {
+      this.vm = vm
+      if (isRender) {
+        vm._watcher = this
+      }
+      vm._watchers.push(this)
+    }
+
+    if (options) {
+      this.lazy = !!options.lazy
+    }
+
+    this.dirty = this.lazy
+
+    if (typeof expOrFn === 'function') {
+      this.getter = expOrFn
+    }
+    this.lazy ? noop() : this.get()
   }
 
   get () {
@@ -26,6 +48,18 @@ export class Watcher {
     } finally {
       popTarget()
       this.cleanDepend()
+    }
+  }
+
+  evaluate () {
+    this.value = this.getter()
+    this.dirty = false
+  }
+
+  depend () {
+    let length = this.deps.length
+    while (--length) {
+      this.deps[length].depend()
     }
   }
 
