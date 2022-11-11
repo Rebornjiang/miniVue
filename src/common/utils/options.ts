@@ -1,6 +1,7 @@
 import type { Component } from '@type/vue'
 import type { ComponentOptions } from '@type/options'
-import { extend, hasOwn, isPlainObject } from './utils'
+import { extend, hasOwn, isArray, isPlainObject } from './utils'
+// import { nativeWatch } from '../constants'
 
 // 创建合并策略
 const strategy = Object.create(null)
@@ -53,6 +54,29 @@ strategy.computed = function (parentVal: any, childVal: any) {
     extend(ret, parentVal)
     extend(ret, childVal)
   }
+  return ret
+}
+
+strategy.watch = function (parentVal:any, childVal: any) {
+  if (childVal) {
+    !isPlainObject(childVal) && (() => console.warn('options.watche defined error'))()
+  }
+
+  if (!parentVal) return childVal
+  if (!childVal) return parentVal
+  const ret = Object.create(null)
+
+  for (const key in childVal) {
+    const parentItem = parentVal[key]
+    const childItem = childVal[key]
+
+    if (parentItem && !isArray(parentItem)) {
+      ret[key] = [parentItem]
+    }
+
+    ret[key] = parentItem ? parentItem.concat(childItem) : isArray(childItem) ? childItem : [childItem]
+  }
+
   return ret
 }
 

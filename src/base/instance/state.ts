@@ -1,10 +1,11 @@
 import { GlobalAPI } from '@type/global-api'
 import { Component } from '@type/vue'
-import { isPlainObject, validVariable, noop, bind, hasOwn } from '@/common/utils/'
+import { isPlainObject, validVariable, noop, bind, hasOwn, isArray } from '@/common/utils/'
 import { ComponentOptions } from '@type/options'
 import { observe } from '@/observer'
 import { Watcher } from '@/observer/watcher'
 import { Dep } from '@/observer/dep'
+import { nativeWatch } from '@/common/constants'
 export function stateMixin (Vue:GlobalAPI) {
   // 曝露出 $data ，给其作一层代理, 代理 vm._data
   const dataDef = {
@@ -33,11 +34,31 @@ export function initState (vm:Component) {
   }
 
   if (opts.computed) initComputed(vm, opts.computed)
+  if (opts.watch && opts.watch !== nativeWatch) initWatcher(vm, opts.watch)
 }
 
 const ComputedOptions = {
   lazy: true
 }
+
+function initWatcher (vm:Component, watchs: any) {
+  if (!isPlainObject<any>(watchs)) return
+  for (const key in watchs) {
+    const watch = watchs[key]
+    if (isArray(watch)) {
+      for (let i = 0, len = watch.length; i < len; i++) {
+        createWatcher(vm, key, watch[i])
+      }
+    } else {
+      createWatcher(vm, key, watch)
+    }
+  }
+}
+
+function createWatcher (vm:Component, expOrFn:string | Function, handler: any, options?: object) {
+
+}
+
 function initComputed (vm: Component, computed: any) {
   const watchers:Component['_computedWatchers'] = (vm._computedWatchers = {})
   const keys = Object.keys(computed)
