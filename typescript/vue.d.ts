@@ -51,6 +51,7 @@ export declare class Component {
   _e(text: string):VNode
 
   $mount(el: Element | string): Component
+  $watch(expOrFn: string | Function, ...args:any):any
   $createElement(tag?: string, data?: Record<string, any>, children?:VNodeChildren, normalizationType?: any): VNode |VNode[]
 
   // eslint-disable-next-line no-undef

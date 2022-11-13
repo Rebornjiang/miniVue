@@ -5,6 +5,7 @@ import type{ Component } from '@type/vue'
 type extraProps = {
   $data: Record<string, any>
   $mount: Component['$mount']
+  $watch: Component['$watch']
 }
 
 // GlobalAPI 将会被指定为 Vue 构造函数的类型

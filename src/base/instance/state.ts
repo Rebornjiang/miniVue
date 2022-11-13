@@ -18,6 +18,20 @@ export function stateMixin (Vue:GlobalAPI) {
   }
 
   Object.defineProperty(Vue.prototype, '$data', dataDef)
+
+  Vue.prototype.$watch = function(expOrFn, handler, options) {
+    const vm:Component = this
+    // 非 通过options 定义的  watch, 第二参数允许省略直接传入 options
+    if(isPlainObject<any>(handler)) {
+      return createWatcher(vm, expOrFn, handler,options)
+    }
+
+    options.user = true
+
+    const watcher = new Watcher(vm, expOrFn,handler,options)
+
+    
+  }
 }
 
 export function initState (vm:Component) {
@@ -56,7 +70,16 @@ function initWatcher (vm:Component, watchs: any) {
 }
 
 function createWatcher (vm:Component, expOrFn:string | Function, handler: any, options?: object) {
+  if (isPlainObject<any>(handler)) {
+    options = handler
+    handler = handler.handler
+  }
 
+  if (typeof handler === 'string') {
+    handler = vm[handler]
+  }
+
+  vm.$watch(expOrFn, handler, options)
 }
 
 function initComputed (vm: Component, computed: any) {
