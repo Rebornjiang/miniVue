@@ -39,7 +39,7 @@ export class Dep {
 
 Dep.target = null
 
-export function pushTarget (target: any) {
+export function pushTarget (target?: any) {
   watcherStack.push(target)
   Dep.target = target
 }

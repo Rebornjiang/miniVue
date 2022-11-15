@@ -4,7 +4,7 @@ import { isPlainObject, validVariable, noop, bind, hasOwn, isArray } from '@/com
 import { ComponentOptions } from '@type/options'
 import { observe } from '@/observer'
 import { Watcher } from '@/observer/watcher'
-import { Dep } from '@/observer/dep'
+import { Dep, popTarget, pushTarget } from '@/observer/dep'
 import { nativeWatch } from '@/common/constants'
 export function stateMixin (Vue:GlobalAPI) {
   // 曝露出 $data ，给其作一层代理, 代理 vm._data
@@ -19,18 +19,29 @@ export function stateMixin (Vue:GlobalAPI) {
 
   Object.defineProperty(Vue.prototype, '$data', dataDef)
 
-  Vue.prototype.$watch = function(expOrFn, handler, options) {
+  Vue.prototype.$watch = function (expOrFn, handler, options) {
     const vm:Component = this
     // 非 通过options 定义的  watch, 第二参数允许省略直接传入 options
-    if(isPlainObject<any>(handler)) {
-      return createWatcher(vm, expOrFn, handler,options)
+    if (isPlainObject<any>(handler)) {
+      return createWatcher(vm, expOrFn, handler, options)
     }
 
     options.user = true
 
-    const watcher = new Watcher(vm, expOrFn,handler,options)
+    const watcher = new Watcher(vm, expOrFn, handler, options)
+    if (options.immediate) {
+      pushTarget()
+      try {
+        watcher.cb?.()
+      } catch (error) {
+        console.warn(error, 'watcher CB')
+      }
+      popTarget()
+    }
 
-    
+    return () => {
+      watcher.teardown()
+    }
   }
 }
 
