@@ -50,7 +50,6 @@ export function initState (vm:Component) {
   const opts = vm.$options
 
   if (opts.methods) initMethods(vm, opts)
-  console.log(vm)
 
   if (opts.data) {
     initData(vm)
@@ -186,7 +185,6 @@ function initData (vm: Component) {
 
   // 转换为响应式数据
   observe(data)
-  console.log({ data })
 }
 
 function getData (data: Function, vm: Component) {

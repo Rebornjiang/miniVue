@@ -55,7 +55,6 @@ export class Watcher {
     let value
     try {
       value = this.getter.call(vm, vm)
-      console.log(value)
     } catch (error) {
       console.warn('watcher getter 出错哦')
     } finally {

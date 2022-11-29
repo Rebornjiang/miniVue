@@ -27,7 +27,6 @@ export function renderMixin (Vue: GlobalAPI) {
 
     try {
       currentRenderingInstance = vm
-      console.log(vm.$createElement, 'lkkkk')
       vnode = render.call(vm._renderProxy, vm.$createElement as () => VNode)
     } catch (error) {
       console.warn('render 函数执行错误！！！', error)

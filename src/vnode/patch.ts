@@ -49,7 +49,6 @@ export function createPatchFunction (options: {nodeOps:NodeOps, modules:any}):pa
 
     // if (isRealElement) {}
     const parentElm = nodeOps.parentNode(oldVnode)
-    console.log({ elm: parentElm }, '真实dom')
     createElm(vnode, parentElm, nodeOps.nextSibling(oldVnode))
     nodeOps.removeChild(parentElm as Node, oldVnode)
     return vnode.elm as Element

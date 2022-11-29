@@ -1,7 +1,7 @@
 import { isArray, isPlainObject } from '@/common/utils'
 import VNode from '@/vnode/vnode'
 
-export function traverse (val:any, has = new Set()):any {
+export function traverse (val: any, has = new Set()): any {
   if ((!isArray(val) && !isPlainObject<any>(val)) || val instanceof VNode || Object.isFrozen(val)) return undefined
 
   if (val.__ob__) {
@@ -18,8 +18,7 @@ export function traverse (val:any, has = new Set()):any {
   } else {
     const obj = val as any
     const keys = Object.keys(obj)
-    for (const key in keys) {
-      traverse(obj[key], has)
-    }
+    let length = keys.length
+    while (length--) traverse(obj[keys[length]], has)
   }
 }

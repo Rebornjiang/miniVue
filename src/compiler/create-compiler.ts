@@ -8,11 +8,9 @@ import { parse } from './parse'
 // compiler
 function baseCompile (template: string, options:CompilerOptions):CompiledResult {
   const ast = parse(template, options)
-  console.log({ ast })
   // 先省略 optimizer
 
   const code = generate(ast, options)
-  console.log({ code })
   return { render: code.render, ast }
 }
 

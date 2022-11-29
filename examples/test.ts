@@ -5,29 +5,25 @@ const vm = new Vue({
     firstName: 'reborn',
     lastName: 'jiang',
     count: 5,
-    nocacheVal: 5
+    info: {
+      name: 'reborn',
+      age: 18,
+      tall: 180
+    }
   },
   computed: {
     fullName () {
       return this.firstName + this.lastName
-    },
-    square: {
-      get () {
-        return this.count * this.count
+    }
+  },
+  watch: {
+    info: {
+      handler (newVal:any, oldVal:any) {
+        console.log('watch cb executed!')
       },
-      set (val:any) {
-        this.count = val
-      }
-    },
-    cube: {
-      get () {
-        return this.nocacheVal * this.nocacheVal * this.nocacheVal
-      },
-      set (val: any) {
-        this.nocacheVal = val
-      },
-      cache: false
+      deep: true
     }
   }
 })
+console.log(vm)
 vm.$mount('#app')

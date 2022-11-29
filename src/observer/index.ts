@@ -8,7 +8,6 @@ export function observe (data: any) {
   if (!isPlainObject(data) && !isArray(data)) return undefined
   if (Object.isExtensible(data)) {
     ob = new Observer(data)
-    console.log(ob)
   }
   return ob
 }
