@@ -7,7 +7,8 @@ declare type ASTAttr = {
   start?: number;
   end?: number;
 };
-
+export type EventHanlder = {value: string, dynamic?: boolean, start?: number, end?: number, modifiers?:Record<string, boolean>}
+export type ASTEvents = {[key:string]:EventHanlder | Array<EventHanlder>}
 declare type ASTElement = {
   type: 1;
   tag: string;
@@ -17,6 +18,8 @@ declare type ASTElement = {
   parent: ASTElement | void;
   children: ASTNode[];
 
+  events?: ASTEvents;
+  nativeEvents?: ASTEvents;
   start?: number;
   end?: number;
   forbidden?: boolean;

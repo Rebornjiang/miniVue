@@ -1,8 +1,16 @@
-import { cached } from '@/common/utils'
-import type{ ASTAttr, ASTElement, ASTNode, ASTText, CompilerOptions } from '@type/compiler'
+import { cached, isArray } from '@/common/utils'
+import type{ ASTAttr, ASTElement, ASTEvents, ASTNode, ASTText, CompilerOptions, EventHanlder } from '@type/compiler'
 import he from 'he'
 import { parseHTML } from './html-parser'
 import { parseText } from './text-parser'
+
+// REGEXP
+export const onRE = /^@|^v-on:/
+export const dirRE = /^v-|^@|^:|^#/
+export const bindRE = /^:|^\.|^v-bind:/
+const modifierRE = /\.[^.\]]+(?=[^\]]*$)/g
+const dynamicArgRE = /^\[.*\]$/
+
 export type parseHTMLOptions = {
   shouldKeepComment: boolean,
   start(tag:string, attrs:any[], unary:boolean, start: number, end:number):void
@@ -141,10 +149,73 @@ function makeAttrsMap (attrs: ASTAttr[]) {
 }
 
 export function processElement (element: ASTElement, options: CompilerOptions) {
-  // 目前所有 vue 语法暂不实现，仅渲染
+  // 处理剩余vue语法
+  processAttrs(element, options)
   return element
 }
 
+function processAttrs (element: ASTElement, options:CompilerOptions) {
+  const arrts = element.attrsList
+  arrts.forEach(attr => {
+    let name:string = attr.name
+    const value = attr.value
+    if (dirRE.test(name)) {
+      const modifiers = parseModifiers(name.replace(dirRE, ''))
+      if (bindRE.test(name)) {
+        console.log(':')
+      } else if (onRE.test(name)) {
+        // 处理事件
+        name = name.replace(onRE, '')
+        const isDinamic = dynamicArgRE.test(name)
+        if (isDinamic) {
+          name = name.slice(1, -1)
+        }
+        addHandler(element, name, value, modifiers, attr, isDinamic)
+      } else {
+        // 指令
+      }
+    } else {
+      console.log('普通 attr')
+    }
+  })
+}
+function parseModifiers (name: string):Object|void {
+  const match = name.match(modifierRE)
+  if (match) {
+    const ret:Record<string, boolean> = {}
+    match.forEach(m => {
+      ret[m.slice(1)] = true
+    })
+    return ret
+  }
+}
+
+function addHandler (el:ASTElement, name: string, value: string, modifier:Record<string, boolean>, attr: ASTAttr, dynamic: boolean) {
+  // 1. 处理modifier：
+  // 1) click.right => contenxtMenu, click.left => mouseup;2) capture，once.passive 修饰符加入特别的标识好在 runtime 阶段处理;
+
+  // 3) 处理是否是原生事件
+  let events:ASTEvents
+  if (modifier.native) {
+    events = el.nativeEvents || (el.nativeEvents = { })
+  } else {
+    events = el.events || (el.events = { })
+  }
+
+  const newHandler:EventHanlder = { value, dynamic }
+  if (modifier) {
+    newHandler.modifiers = modifier
+  }
+
+  let handler = events[name]
+  if (isArray(handler)) {
+    handler.push(newHandler)
+  } else if (handler) {
+    handler = [handler, newHandler]
+  } else {
+    events[name] = newHandler
+  }
+}
 function isForbiddenTag (el:ASTElement):boolean {
   return (el.tag === 'style') || (el.tag === 'script' && ((!el.attrsMap.type) || (el.attrsMap.type as string) === 'text/javascript'))
 }

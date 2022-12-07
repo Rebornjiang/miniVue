@@ -1,4 +1,5 @@
-import { ASTElement, ASTExpression, ASTNode, ASTText, CompilerOptions } from '@type/compiler'
+import type{ ASTElement, ASTExpression, ASTNode, ASTText, CompilerOptions } from '@type/compiler'
+import { genHandlers } from './genHandler'
 
 type DataGenFunction = (el:ASTElement) => string
 export class CodegenState {
@@ -29,7 +30,13 @@ function genElement (el: ASTElement, state:CodegenState):string {
 }
 
 export function genData (el:ASTElement, state:CodegenState):string {
-  return '{}'
+  let data = '{'
+  if (el.events) {
+    data += genHandlers(el.events, false)
+  } else if (el.nativeEvents) {
+    data += genHandlers(el.nativeEvents, true)
+  }
+  return data
 }
 
 export function genChildren (el: ASTElement, state: CodegenState) {
