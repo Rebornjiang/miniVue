@@ -179,7 +179,7 @@ function processAttrs (element: ASTElement, options:CompilerOptions) {
     }
   })
 }
-function parseModifiers (name: string):Object|void {
+function parseModifiers (name: string):Record<string, boolean>| undefined {
   const match = name.match(modifierRE)
   if (match) {
     const ret:Record<string, boolean> = {}
@@ -190,19 +190,18 @@ function parseModifiers (name: string):Object|void {
   }
 }
 
-function addHandler (el:ASTElement, name: string, value: string, modifier:Record<string, boolean>, attr: ASTAttr, dynamic: boolean) {
+function addHandler (el:ASTElement, name: string, value: string, modifier?:Record<string, boolean>, attr: ASTAttr, dynamic: boolean) {
   // 1. 处理modifier：
   // 1) click.right => contenxtMenu, click.left => mouseup;2) capture，once.passive 修饰符加入特别的标识好在 runtime 阶段处理;
-
   // 3) 处理是否是原生事件
   let events:ASTEvents
-  if (modifier.native) {
+  if (modifier?.native) {
     events = el.nativeEvents || (el.nativeEvents = { })
   } else {
     events = el.events || (el.events = { })
   }
-
-  const newHandler:EventHanlder = { value, dynamic }
+  const { start, end } = attr
+  const newHandler:EventHanlder = { value, dynamic, start, end }
   if (modifier) {
     newHandler.modifiers = modifier
   }
