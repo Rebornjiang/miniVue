@@ -1,14 +1,17 @@
 const path = require('path')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+// const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ESLintPlugins = require('eslint-webpack-plugin')
-
+// const {CleanWebpackPlugin} = require('clean-webpack-plugin')
 module.exports = {
   mode: 'development',
   entry: {
-    vue: './src/main.ts',
-    test: './examples/test.ts'
+    vue: './src/main.ts'
+    // test: './examples/test.ts'
   },
   devtool: 'source-map',
+  experiments: {
+    // outputModule: true // 实验特性
+  },
   module: {
     rules: [
       {
@@ -30,14 +33,19 @@ module.exports = {
   },
   output: {
     filename: '[name].js',
-    clean: true,
-    path: path.resolve(__dirname, 'dist')
+    path: path.resolve(__dirname, 'dist'),
+    library: {
+      name: 'miniVue',
+      type: 'umd'
+      // type: 'module'
+    }
   },
   plugins: [
-    new HtmlWebpackPlugin({
-      title: 'Development',
-      template: path.resolve(__dirname, 'public', 'index.html')
-    }),
+    // new HtmlWebpackPlugin({
+    //   title: 'Development',
+    //   template: path.resolve(__dirname, 'public', 'index.html')
+    // }),
     new ESLintPlugins({ extensions: ['ts', 'js'], fix: true })
+    // new CleanWebpackPlugin()
   ]
 }

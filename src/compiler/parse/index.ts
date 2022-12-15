@@ -1,5 +1,5 @@
 import { cached, isArray } from '@/common/utils'
-import type{ ASTAttr, ASTElement, ASTEvents, ASTNode, ASTText, CompilerOptions, EventHanlder } from '@type/compiler'
+import type { ASTAttr, ASTElement, ASTEvents, ASTNode, ASTText, CompilerOptions, EventHanlder } from '@type/compiler'
 import he from 'he'
 import { parseHTML } from './html-parser'
 import { parseText } from './text-parser'
@@ -13,23 +13,23 @@ const dynamicArgRE = /^\[.*\]$/
 
 export type parseHTMLOptions = {
   shouldKeepComment: boolean,
-  start(tag:string, attrs:any[], unary:boolean, start: number, end:number):void
-  isUnaryTag?: (tag:string) => boolean | undefined
-  end(tag:string, start: number, end: number):void
-  chars(text: string, start?: number, end?: number):void
-  comment(text: string, start: number, end: number):void
+  start(tag: string, attrs: any[], unary: boolean, start: number, end: number): void
+  isUnaryTag?: (tag: string) => boolean | undefined
+  end(tag: string, start: number, end: number): void
+  chars(text: string, start?: number, end?: number): void
+  comment(text: string, start: number, end: number): void
 
-  [key:string]: any
+  [key: string]: any
 }
 
 const decodeHTMLCached = cached(he.decode)
-export function parse (template: string, options: CompilerOptions):ASTElement {
+export function parse (template: string, options: CompilerOptions): ASTElement {
   // 解析 options
   const preserveWhitespace = options.preserveWhitespace !== false
 
-  let root:ASTElement
-  const stack:ASTElement[] = []
-  let currentParent:ASTElement
+  let root: ASTElement
+  const stack: ASTElement[] = []
+  let currentParent: ASTElement
   function closeElement (element: ASTElement) {
     element = processElement(element, options)
 
@@ -37,7 +37,7 @@ export function parse (template: string, options: CompilerOptions):ASTElement {
       console.error(
         'Component template should contain exactly one root element. ' +
         'If you are using v-if on multiple elements, ' +
-         'use v-else-if to chain them instead.'
+        'use v-else-if to chain them instead.'
       )
     }
 
@@ -47,7 +47,7 @@ export function parse (template: string, options: CompilerOptions):ASTElement {
     }
   }
 
-  const parseHTMLOptions:parseHTMLOptions = {
+  const parseHTMLOptions: parseHTMLOptions = {
     shouldKeepComment: true,
     isUnaryTag: options.isUnaryTag,
     start (tag, attrs, unary, start, end) {
@@ -88,7 +88,7 @@ export function parse (template: string, options: CompilerOptions):ASTElement {
 
       if (finalText) {
         // let rest
-        let child:ASTNode | undefined
+        let child: ASTNode | undefined
         // 处理插值表达式
         const res = parseText(text)
         if (res) {
@@ -111,7 +111,7 @@ export function parse (template: string, options: CompilerOptions):ASTElement {
     comment (text, start, end) {
       // 注释节点也只能添加到 root 节点之内
       if (currentParent) {
-        const child:ASTText = {
+        const child: ASTText = {
           isComment: true,
           type: 3,
           text
@@ -126,7 +126,7 @@ export function parse (template: string, options: CompilerOptions):ASTElement {
   return root
 }
 
-export function createASTElement (tag: string, attrs: ASTAttr[], parent: ASTElement | void):ASTElement {
+export function createASTElement (tag: string, attrs: ASTAttr[], parent: ASTElement | void): ASTElement {
   return {
     type: 1,
     tag,
@@ -139,7 +139,7 @@ export function createASTElement (tag: string, attrs: ASTAttr[], parent: ASTElem
 }
 
 function makeAttrsMap (attrs: ASTAttr[]) {
-  const map:Record<string, string> = {}
+  const map: Record<string, string> = {}
   for (let i = 0, l = attrs.length; i < l; i++) {
     // 检测重复属性
     if (map[attrs[i].name]) console.warn('标签上存在重复属性')
@@ -154,10 +154,10 @@ export function processElement (element: ASTElement, options: CompilerOptions) {
   return element
 }
 
-function processAttrs (element: ASTElement, options:CompilerOptions) {
+function processAttrs (element: ASTElement, options: CompilerOptions) {
   const arrts = element.attrsList
   arrts.forEach(attr => {
-    let name:string = attr.name
+    let name: string = attr.name
     const value = attr.value
     if (dirRE.test(name)) {
       const modifiers = parseModifiers(name.replace(dirRE, ''))
@@ -170,7 +170,7 @@ function processAttrs (element: ASTElement, options:CompilerOptions) {
         if (isDinamic) {
           name = name.slice(1, -1)
         }
-        addHandler(element, name, value, modifiers, attr, isDinamic)
+        addHandler(element, name, attr, value, isDinamic, modifiers)
       } else {
         // 指令
       }
@@ -179,10 +179,10 @@ function processAttrs (element: ASTElement, options:CompilerOptions) {
     }
   })
 }
-function parseModifiers (name: string):Record<string, boolean>| undefined {
+function parseModifiers (name: string): Record<string, boolean> | undefined {
   const match = name.match(modifierRE)
   if (match) {
-    const ret:Record<string, boolean> = {}
+    const ret: Record<string, boolean> = {}
     match.forEach(m => {
       ret[m.slice(1)] = true
     })
@@ -190,18 +190,18 @@ function parseModifiers (name: string):Record<string, boolean>| undefined {
   }
 }
 
-function addHandler (el:ASTElement, name: string, value: string, modifier?:Record<string, boolean>, attr: ASTAttr, dynamic: boolean) {
+function addHandler (el: ASTElement, name: string, attr: ASTAttr, value: string, dynamic: boolean, modifier?: Record<string, boolean>) {
   // 1. 处理modifier：
   // 1) click.right => contenxtMenu, click.left => mouseup;2) capture，once.passive 修饰符加入特别的标识好在 runtime 阶段处理;
   // 3) 处理是否是原生事件
-  let events:ASTEvents
+  let events: ASTEvents
   if (modifier?.native) {
-    events = el.nativeEvents || (el.nativeEvents = { })
+    events = el.nativeEvents || (el.nativeEvents = {})
   } else {
-    events = el.events || (el.events = { })
+    events = el.events || (el.events = {})
   }
   const { start, end } = attr
-  const newHandler:EventHanlder = { value, dynamic, start, end }
+  const newHandler: EventHanlder = { value, dynamic, start, end }
   if (modifier) {
     newHandler.modifiers = modifier
   }
@@ -215,6 +215,6 @@ function addHandler (el:ASTElement, name: string, value: string, modifier?:Recor
     events[name] = newHandler
   }
 }
-function isForbiddenTag (el:ASTElement):boolean {
+function isForbiddenTag (el: ASTElement): boolean {
   return (el.tag === 'style') || (el.tag === 'script' && ((!el.attrsMap.type) || (el.attrsMap.type as string) === 'text/javascript'))
 }

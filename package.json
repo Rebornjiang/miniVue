@@ -11,6 +11,7 @@
     "@types/he": "^1.1.2",
     "@typescript-eslint/eslint-plugin": "^5.36.2",
     "@typescript-eslint/parser": "^5.36.2",
+    "clean-webpack-plugin": "^4.0.0",
     "eslint": "^8.23.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.26.0",
@@ -30,7 +31,8 @@
   },
   "scripts": {
     "dev": "webpack serve --open",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "build:dev": "webpack --watch"
   },
   "lint-staged": {
     "*.{js,ts}": [

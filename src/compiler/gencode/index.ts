@@ -36,6 +36,7 @@ export function genData (el:ASTElement, state:CodegenState):string {
   } else if (el.nativeEvents) {
     data += genHandlers(el.nativeEvents, true)
   }
+  data += '}'
   return data
 }
 

@@ -4,23 +4,23 @@ import installRenderHelpers from './render-helpers'
 import type { Component } from '@type/vue'
 import { compileToFunctions } from '@/compiler'
 import { parseElOption, getOutHtml } from '@/common/utils'
-import type{ CompilerOptions } from '@type/compiler'
+import type { CompilerOptions } from '@type/compiler'
 import type { ComponentOptions } from '@type/options'
 import { mountComponent } from './lifecycle'
 import VNodeClass, { createEmptyVNode } from '@/vnode/vnode'
 import { createElement } from '@/vnode/create-element'
-import type{ VNode } from '@type/vnode'
+import type { VNode } from '@type/vnode'
 
 // 记录当前调用 render 函数的组件
-export let currentRenderingInstance: Component |null = null
-export function initRender (vm:Component) {
+export let currentRenderingInstance: Component | null = null
+export function initRender (vm: Component) {
   vm.$createElement = (tag, data, children, normalizationType) => createElement(vm, tag, data, children, normalizationType, true)
 }
 export function renderMixin (Vue: GlobalAPI) {
   // 给 Vue 原型添加渲染帮助方法，以便 render 函数用到
   installRenderHelpers(Vue.prototype)
   Vue.prototype._render = function () {
-    const vm:Component = this
+    const vm: Component = this
     const { render } = vm.$options
 
     let vnode
@@ -52,6 +52,7 @@ export function renderMixin (Vue: GlobalAPI) {
     el = parseElOption(el)
     const options = vm.$options
     if (!options.render) {
+      console.log('难道没有laizheli')
       let template = options.template
       if (template) {
         if (typeof template === 'string') {
@@ -71,8 +72,10 @@ export function renderMixin (Vue: GlobalAPI) {
       }
 
       if (template && typeof template === 'string') {
+        console.log(333)
         // 调用编译器将 template 转换为 render 函数
         const { render } = compileToFunctions(template, {} as CompilerOptions, vm)
+        console.log({ render })
         // compiler 生成的 render 函数不需要 h 函数参数，需要转下类型
         options.render = render as ComponentOptions['render']
       }
