@@ -11,13 +11,18 @@
 </head>
 
 <body>
-  <div id="app">{{msg}}</div>
+  <div id="app" @click="handleClick">{{msg}}</div>
   <script >
     const Vue = miniVue.default
     const vm = new Vue({
       el: '#app',
       data: {
         msg: 'msg'
+      },
+      methods: {
+        handleClick() {
+          console.log('click')
+        }
       }
     })
   </script>

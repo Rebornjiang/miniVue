@@ -8,6 +8,7 @@ type TNodeOps = typeof nodeOps
 type NodeOps = {
   [K in keyof TNodeOps] : TNodeOps[K]
 }
+// const cbs = ['created']
 export function createPatchFunction (options: {nodeOps:NodeOps, modules:any}):patchFn {
   function insert (parent:any, elm:any, ref:any) {
     if (isDef(parent)) {
