@@ -18,7 +18,7 @@ export function genHandlers (events: ASTEvents, isNative: boolean):string {
     if (curHanlder && curHanlder.dynamic) {
       dynamicHanlders += `${name},${handler}`
     } else {
-      staticHanlders += `${name}:${handler}},`
+      staticHanlders += `${name}:${handler},`
     }
   }
   staticHanlders = `{${staticHanlders.slice(0, -1)}}`

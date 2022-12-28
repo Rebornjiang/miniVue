@@ -26,6 +26,7 @@ function genElement (el: ASTElement, state:CodegenState):string {
   const data = genData(el, state)
   const children = genChildren(el, state)
   const code = `_c('${el.tag}'${data ? ',' + data : ''}${children ? `,${children}` : ''})`
+  console.log(code)
   return code
 }
 

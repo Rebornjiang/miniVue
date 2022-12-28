@@ -1,15 +1,39 @@
 // import { isDef } from '@/common/utils'
 import { isArray, isDef, isPrimitive, isTrue } from '@/common/utils'
-import type{ VNode } from '@type/vnode'
+import type{ VNode, MoludeType } from '@type/vnode'
 import type { patchFn } from '@type/vue'
 import * as nodeOps from './helpers/node-ops'
+import modules from './modules'
+import ClassVnode from './vnode'
+
 // nodeOps 类型
 type TNodeOps = typeof nodeOps
 type NodeOps = {
   [K in keyof TNodeOps] : TNodeOps[K]
 }
-// const cbs = ['created']
-export function createPatchFunction (options: {nodeOps:NodeOps, modules:any}):patchFn {
+type Hooks = ['created', 'update']
+// const hooks:Hooks = ['created', 'update']
+
+type CbsType = {
+  // eslint-disable-next-line no-unused-vars
+  [K in Hooks[number]]:any[]
+}
+
+const empltyVnode = new ClassVnode('', {}, [])
+export function createPatchFunction (options: {nodeOps:NodeOps, modules:MoludeType[]}):patchFn {
+  const cbs:CbsType = {
+    created: [],
+    update: []
+  }
+
+  for (let i = 0, len = modules.length; i < len; i++) {
+    const curModule = modules[i]
+    let key:keyof (typeof curModule)
+    for (key in curModule) {
+      if (key in cbs) cbs[key].push(curModule[key])
+    }
+  }
+
   function insert (parent:any, elm:any, ref:any) {
     if (isDef(parent)) {
       if (isDef(ref)) {
@@ -19,6 +43,15 @@ export function createPatchFunction (options: {nodeOps:NodeOps, modules:any}):pa
       } else {
         nodeOps.appendChild(parent, elm)
       }
+    }
+  }
+  function invokeCreateHooks (vnode:VNode) {
+    cbs.created.forEach(cb => {
+      cb(empltyVnode, vnode)
+    })
+    const hook = vnode.data?.hooks
+    if (isDef(hook)) {
+      if (isDef(hook.create)) hook.create(empltyVnode, vnode)
     }
   }
 
@@ -32,10 +65,15 @@ export function createPatchFunction (options: {nodeOps:NodeOps, modules:any}):pa
     }
   }
   function createElm (vnode: VNode, parentElm?: any, refElm?: any) {
-    const { tag, children, isComment, text } = vnode
+    const { tag, children, isComment, text, data } = vnode
     if (isDef(tag)) {
       vnode.elm = nodeOps.createElement(tag, vnode)
       createChildren(vnode, children)
+      // 调用各个模块中的 created 钩子
+      if (data) {
+        invokeCreateHooks(vnode)
+      }
+
       insert(parentElm, vnode.elm, refElm)
     } else if (isTrue(isComment)) {
       vnode.elm = nodeOps.createComment(text as string)

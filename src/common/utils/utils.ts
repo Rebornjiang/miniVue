@@ -48,6 +48,10 @@ export function cached<R> (fn:(val: string) => R):(val: string) => R {
   }
 }
 
+export function isUndef (val: any) {
+  return val === undefined || val === null
+}
+
 export const isArray = Array.isArray
 
 export function isPrimitive (value: any): boolean {
